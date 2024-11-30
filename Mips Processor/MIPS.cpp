@@ -4,153 +4,18 @@
 #include <vector>
 using namespace std;
 
+int cti(char);
+int STI(string);
+int binToDecimal(int);
+string decToBinary(int);
+int lettersToNumbers(char);
+string hexToBinary(string hex);
+string subString(string,int, int);
+char numToLetter(int);
+char numToLetter(int);
+string bintoHex(string bin);
+void addZeros(string &s1, string &s2);
 
-int cti(char i)
-{
-  i = tolower(i);
-  return i - '0';
-}
-int STI(string s)
-{
-    int c = 0;
-    int meme = 1;
-    for(int i = s.length()-1;i > -1; i--)
-    {
-        int v = cti(s[i])*(meme);
-        c = c+v;
-        meme = meme*10;
-    }
-    return c;
-}
-int binToDecimal(int n){
-  
-  int answer = 0;
-//The variable that increases the power by 2 per placement
-  int multi = 1;
-  int added;
-  while(n != 1 && n != 0)
-  {
-    added = (n%10) * multi;
-    answer = answer + added;
-    multi = multi * 2;
-    n = n/10;
-  }
-  added = n * multi;
-  answer = answer + added;
-  return answer;
-  
-}
-string decToBinary(int n)
-{
-  if(n == 0){
-    return "0";
-  }
-  string str = "";
-  string added = "";
-  while(n != 0)
-  {
-    int dig = n%2;
-    n = n/2;
-    str = to_string(dig) + str;
-  }
-//I keep it as a string because the integer data type gets easily overloaded
-  return str;
-}
-int lettersToNumbers(char c){
-  c = char(tolower(c));
-  return c - 87;
-}
-string hexToBinary(string hex){
-  string answer = "";
-  int value = 0;
-  string seg = "";
-  for(int i = hex.length()-1;i >= 0; i--)
-  {
-
-    if(hex[i] >= '0' && hex[i] <= '9')
-    {
-      value = cti(hex[i]);
-      seg = decToBinary(value);
-      
-      if(seg.length() == 1){
-        seg = "000"+seg;
-   
-      }
-      else if(seg.length() == 2){
-        seg = "00"+seg;
-      }
-      else if(seg.length() == 3){
-        seg = "0"+seg;
-      }
-    }
-    else{
-      value = lettersToNumbers(hex[i]);
-      seg = decToBinary(value);
-    }
-    
-    answer = seg + answer;
-  }
-
-  return answer;
-}
-string subString(string str,int start, int end){
-  string nn = "";
-  for(int i = start;i < end;i++){
-    nn+=str[i];
-  }
-  return nn;
-}
-char numToLetter(int i){
-  return to_string(i)[1] + 49;
-}
-string bintoHex(string bin){
-string hex = "";
-int end  = bin.length();
-int start = end;
-while(start != 0){
-start = end - 4;
-if(start < 0){
-  start = 0;
-}
-string curr = subString(bin,start,end);
-int val = binToDecimal(STI(curr));
-if(val < 10){
-  hex = to_string(val) + hex;
-}
-else{
-  hex = numToLetter(val) + hex;
-}
-end = start;
-}
-return hex;
-}
-// void addZeros(string s1, string s2){
-// int diff = s1.length()-s2.length();
-//     if(diff < 0){
-//         diff*=-1;
-//     }
-//     string z = "";
-//     for(int i = 0;i < diff;i++){
-//         z+="0";
-//     }
-//     if(s1.length()>s2.length()){
-//         s2 = z+s2;
-//     }
-//     else{
-//         s1 = z+s1;
-//     }
-// }
-void addZeros(string &s1, string &s2) {
-    int diff = s1.length() - s2.length();
-    if (diff < 0) diff = -diff;
-
-    string zeros(diff, '0');
-    if (s1.length() > s2.length()) {
-        s2 = zeros + s2;
-    } else {
-        s1 = zeros + s1;
-    }
-}
 string operator&&(string s1, string s2){
     addZeros(s1,s2);
     string f = "";
@@ -326,7 +191,7 @@ bool isHex(string hex){
         }
     }
     return true;
-}
+};
 int main(){
 
     map<int, vector<string> > reg;
@@ -363,4 +228,150 @@ int main(){
     
 
     
+};
+int cti(char i)
+{
+  i = tolower(i);
+  return i - '0';
+}
+int STI(string s)
+{
+    int c = 0;
+    int meme = 1;
+    for(int i = s.length()-1;i > -1; i--)
+    {
+        int v = cti(s[i])*(meme);
+        c = c+v;
+        meme = meme*10;
+    }
+    return c;
+}
+int binToDecimal(int n){
+  
+  int answer = 0;
+//The variable that increases the power by 2 per placement
+  int multi = 1;
+  int added;
+  while(n != 1 && n != 0)
+  {
+    added = (n%10) * multi;
+    answer = answer + added;
+    multi = multi * 2;
+    n = n/10;
+  }
+  added = n * multi;
+  answer = answer + added;
+  return answer;
+  
+}
+string decToBinary(int n)
+{
+  if(n == 0){
+    return "0";
+  }
+  string str = "";
+  string added = "";
+  while(n != 0)
+  {
+    int dig = n%2;
+    n = n/2;
+    str = to_string(dig) + str;
+  }
+//I keep it as a string because the integer data type gets easily overloaded
+  return str;
+}
+int lettersToNumbers(char c){
+  c = char(tolower(c));
+  return c - 87;
+}
+string hexToBinary(string hex){
+  string answer = "";
+  int value = 0;
+  string seg = "";
+  for(int i = hex.length()-1;i >= 0; i--)
+  {
+
+    if(hex[i] >= '0' && hex[i] <= '9')
+    {
+      value = cti(hex[i]);
+      seg = decToBinary(value);
+      
+      if(seg.length() == 1){
+        seg = "000"+seg;
+   
+      }
+      else if(seg.length() == 2){
+        seg = "00"+seg;
+      }
+      else if(seg.length() == 3){
+        seg = "0"+seg;
+      }
+    }
+    else{
+      value = lettersToNumbers(hex[i]);
+      seg = decToBinary(value);
+    }
+    
+    answer = seg + answer;
+  }
+
+  return answer;
+}
+string subString(string str,int start, int end){
+  string nn = "";
+  for(int i = start;i < end;i++){
+    nn+=str[i];
+  }
+  return nn;
+}
+char numToLetter(int i){
+  return to_string(i)[1] + 49;
+}
+string bintoHex(string bin){
+string hex = "";
+int end  = bin.length();
+int start = end;
+while(start != 0){
+start = end - 4;
+if(start < 0){
+  start = 0;
+}
+string curr = subString(bin,start,end);
+int val = binToDecimal(STI(curr));
+if(val < 10){
+  hex = to_string(val) + hex;
+}
+else{
+  hex = numToLetter(val) + hex;
+}
+end = start;
+}
+return hex;
+}
+// void addZeros(string s1, string s2){
+// int diff = s1.length()-s2.length();
+//     if(diff < 0){
+//         diff*=-1;
+//     }
+//     string z = "";
+//     for(int i = 0;i < diff;i++){
+//         z+="0";
+//     }
+//     if(s1.length()>s2.length()){
+//         s2 = z+s2;
+//     }
+//     else{
+//         s1 = z+s1;
+//     }
+// }
+void addZeros(string &s1, string &s2) {
+    int diff = s1.length() - s2.length();
+    if (diff < 0) diff = -diff;
+
+    string zeros(diff, '0');
+    if (s1.length() > s2.length()) {
+        s2 = zeros + s2;
+    } else {
+        s1 = zeros + s1;
+    }
 }
