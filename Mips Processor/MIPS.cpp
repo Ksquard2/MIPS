@@ -2,9 +2,14 @@
 #include <string>
 #include <map>
 #include <vector>
+#include <bitset>
+#include <sstream>
+#include <iomanip>
+#include <stdexcept>
 using namespace std;
 
 int cti(char);
+void printRegisters(map<int, vector<string> >);
 int STI(string);
 int binToDecimal(int);
 string decToBinary(int);
@@ -123,55 +128,80 @@ string SUB(string h1, string h2){
     return decToHex(answer);
 
 }
-void RFormat(string hex,map<int, vector<string> > reg){
+void RFormat(string hex,map<int, vector<string> >& reg){
     hex = hexToBinary(hex);
+    cout<<"Binary: "<<"(6)"<<subString(hex,0,6)<<" (5)";
     hex = subString(hex,6,hex.length());
+    cout<<subString(hex,0,5)<<" (5)"<<subString(hex,5,10)<<" (5)"<<subString(hex,10,15)<<" (6)"<<subString(hex,20,26)<<endl;
     int rs = binToDecimal(STI(subString(hex,0,5)));
+    cout<<"Rs: $"<<rs<<endl;
     int rt = binToDecimal(STI(subString(hex,5,10)));
+    cout<<"Rt: $"<<rt<<endl;
     int rd = binToDecimal(STI(subString(hex,10,15)));
+    cout<<"Rd: $"<<rd<<endl;
     int ins =  binToDecimal(STI(subString(hex,20,26)));
+   
     if(ins == 32){
+        cout<<"Instruction: "<<ins<<" -> add"<<" $"<<rs<<" "<<" $"<<rt<<" "<<" $"<<rd<<endl;
         string set = ADD(reg[rs][0],reg[rt][0]);
-        
         reg[rd][0] = set;
     }
     if(ins == 34){
+      cout<<"Instruction: "<<ins<<" -> subtraction"<<" $"<<rs<<" "<<" $"<<rt<<" "<<" $"<<rd<<endl;
         string set = SUB(reg[rs][0],reg[rt][0]);
         reg[rd][0] = set;
     }
     if(ins == 36){
+        cout<<"Instruction: "<<ins<<" -> AND"<<" $"<<rs<<" "<<" $"<<rt<<" "<<" $"<<rd<<endl;
         string set = (reg[rs][0]&&reg[rt][0]);
         reg[rd][0] = set;
     }
     if(ins == 37){
+        cout<<"Instruction: "<<ins<<" -> OR"<<" $"<<rs<<" "<<" $"<<rt<<" "<<" $"<<rd<<endl;
         string set = (reg[rs][0]||reg[rt][0]);
         reg[rd][0] = set;
     }
      if(ins == 38){
+        cout<<"Instruction: "<<ins<<" -> XOR"<<" $"<<rs<<" "<<" $"<<rt<<" "<<" $"<<rd<<endl;
         string set = (reg[rs][0]^reg[rt][0]);
         reg[rd][0] = set;
     }
-    cout<<"Register "<<rd<<" contains the value of "<<reg[rd][0]<<endl;
+
 }
 void IFormat(string hex, map<int, vector<string> >& reg){
     hex = hexToBinary(hex);
+    
+    cout<<"Binary: (6)"<<subString(hex,0,6)<<" (5)"<<subString(hex,6,11)<<" (5)"<<subString(hex,11,16)<<" (16)"<<subString(hex,16,32)<<endl;
     int opCode =  binToDecimal(STI(subString(hex,0,6)));
+ 
     int rs = binToDecimal(STI(subString(hex,6,11)));
+    cout<<"Rs: $"<<rs<<endl;
     int rt = binToDecimal(STI(subString(hex,11,16)));
+    cout<<"Rt: $"<<rt<<endl;
     int im = binToDecimal(STI(subString(hex,16,32)));
+    cout<<"Immediate: "<<im<<endl;
+    
     if(opCode == 8){
+        cout<<"OpCode: "<<opCode<<" -> addi"<<" $"<<rs<<" "<<im<<" $"<<rt<<endl;
         string set = ADD(reg[rs][0],to_string(im));
         reg[rt][0] = set;
     }
     if (opCode == 35) { // LW
+        cout<<"OpCode: "<<opCode<<" -> load word"<<" $"<<rs<<" "<<im<<" $"<<rt<<endl;
         string address = ADD(reg[rs][1], to_string(im));
         reg[rt][0] = address;
-        cout << "Loaded value " << reg[rt][0] << " from memory address " << address << " into register " << rt << endl;
+      
     }
     if (opCode == 43) { // SW
+        cout<<"OpCode: "<<opCode<<" -> store word"<<" $"<<rs<<" "<<im<<" $"<<rt<<endl;
         string address = ADD(reg[rs][0], to_string(im));
+        if(address.length() == 3){
+          address = "0"+address;
+        }
+        else if(address.length() == 2){
+          address = "00"+address;
+        }
         reg[rt][1] = address;
-        cout << "Stored value " << reg[rt][0] << " into memory address " << address << endl;
     }
 }
 bool isHex(string hex){
@@ -197,6 +227,7 @@ bool isHex(string hex){
     }
     return true;
 };
+
 int main(){
 
     map<int, vector<string> > reg;
@@ -220,7 +251,7 @@ int main(){
     string quit= "c";
     string input;
     while(quit != "q"){
-        cout<<"Enter hex: ";
+        cout<<"Enter hexidecimal: ";
         cin>>input;
         while(!isHex(input)){
             cout<<"Enter hex: ";
@@ -232,8 +263,11 @@ int main(){
         else{
           IFormat(input, reg);
         }
+        printRegisters(reg);
+        cout<<"Press q to quit: ";
+        cin>>quit;
     }
-    
+    cout<<"Thank you for using our MIPS Processor";
 
     
 };
@@ -241,6 +275,12 @@ int cti(char i)
 {
   i = tolower(i);
   return i - '0';
+}
+void printRegisters(map<int, vector<string> > regi) {
+    cout << "Updated Register File:\n";
+    for (auto& reg : regi) {
+        cout << "$" << reg.first << ": " << setw(8) << setfill('0') << reg.second[0] << " memory: " << reg.second[1] << "\n";
+    }
 }
 int STI(string s)
 {
