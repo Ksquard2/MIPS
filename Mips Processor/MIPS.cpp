@@ -200,8 +200,6 @@ bool isHex(string hex){
 int main(){
 
     map<int, vector<string> > reg;
-    map<int, string> mem;
-    mem[0] = "4000";
     reg[1].push_back("0009");
     reg[1].push_back("0103");
     reg[2].push_back("012A");
