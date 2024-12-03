@@ -133,6 +133,8 @@ void RFormat(string hex,map<int, vector<string> >& reg){
     cout<<"Binary: "<<"(6)"<<subString(hex,0,6)<<" (5)";
     hex = subString(hex,6,hex.length());
     cout<<subString(hex,0,5)<<" (5)"<<subString(hex,5,10)<<" (5)"<<subString(hex,10,15)<<" (6)"<<subString(hex,20,26)<<endl;
+    cout<<"R Format"<<endl;
+    cout<<"Op code: 0";
     int rs = binToDecimal(STI(subString(hex,0,5)));
     cout<<"Rs: $"<<rs<<endl;
     int rt = binToDecimal(STI(subString(hex,5,10)));
@@ -142,27 +144,27 @@ void RFormat(string hex,map<int, vector<string> >& reg){
     int ins =  binToDecimal(STI(subString(hex,20,26)));
    
     if(ins == 32){
-        cout<<"Instruction: "<<ins<<" -> add"<<" $"<<rs<<" "<<" $"<<rt<<" "<<" $"<<rd<<endl;
+        cout<<"Instruction: "<<ins<<" -> add"<<" $"<<rs<<" + "<<" $"<<rt<<" = "<<"$"<<rd<<endl;
         string set = ADD(reg[rs][0],reg[rt][0]);
         reg[rd][0] = set;
     }
     if(ins == 34){
-      cout<<"Instruction: "<<ins<<" -> subtraction"<<" $"<<rs<<" "<<" $"<<rt<<" "<<" $"<<rd<<endl;
+      cout<<"Instruction: "<<ins<<" -> subtraction"<<" $"<<rs<<" - "<<" $"<<rt<<" = "<<"$"<<rd<<endl;
         string set = SUB(reg[rs][0],reg[rt][0]);
         reg[rd][0] = set;
     }
     if(ins == 36){
-        cout<<"Instruction: "<<ins<<" -> AND"<<" $"<<rs<<" "<<" $"<<rt<<" "<<" $"<<rd<<endl;
+        cout<<"Instruction: "<<ins<<" -> AND"<<" $"<<rs<<" && "<<" $"<<rt<<" = "<<"$"<<rd<<endl;
         string set = (reg[rs][0]&&reg[rt][0]);
         reg[rd][0] = set;
     }
     if(ins == 37){
-        cout<<"Instruction: "<<ins<<" -> OR"<<" $"<<rs<<" "<<" $"<<rt<<" "<<" $"<<rd<<endl;
+        cout<<"Instruction: "<<ins<<" -> OR"<<" $"<<rs<<" || "<<" $"<<rt<<" = "<<"$"<<rd<<endl;
         string set = (reg[rs][0]||reg[rt][0]);
         reg[rd][0] = set;
     }
      if(ins == 38){
-        cout<<"Instruction: "<<ins<<" -> XOR"<<" $"<<rs<<" "<<" $"<<rt<<" "<<" $"<<rd<<endl;
+        cout<<"Instruction: "<<ins<<" -> XOR"<<" $"<<rs<<" @ "<<" $"<<rt<<" = "<<"$"<<rd<<endl;
         string set = (reg[rs][0]^reg[rt][0]);
         reg[rd][0] = set;
     }
@@ -172,6 +174,7 @@ void IFormat(string hex, map<int, vector<string> >& reg){
     hex = hexToBinary(hex);
     
     cout<<"Binary: (6)"<<subString(hex,0,6)<<" (5)"<<subString(hex,6,11)<<" (5)"<<subString(hex,11,16)<<" (16)"<<subString(hex,16,32)<<endl;
+    cout<<"I Format"<<endl;
     int opCode =  binToDecimal(STI(subString(hex,0,6)));
  
     int rs = binToDecimal(STI(subString(hex,6,11)));
@@ -187,21 +190,44 @@ void IFormat(string hex, map<int, vector<string> >& reg){
         reg[rt][0] = set;
     }
     if (opCode == 35) { // LW
-        cout<<"OpCode: "<<opCode<<" -> load word"<<" $"<<rs<<" "<<im<<" $"<<rt<<endl;
+        cout<<"OpCode: "<<opCode<<" -> load word"<<" $"<<rs<<" memory + "<<im<<"= $"<<rt<<endl;
         string address = ADD(reg[rs][1], to_string(im));
         reg[rt][0] = address;
       
     }
     if (opCode == 43) { // SW
-        cout<<"OpCode: "<<opCode<<" -> store word"<<" $"<<rs<<" "<<im<<" $"<<rt<<endl;
+        cout<<"OpCode: "<<opCode<<" -> store word"<<" $"<<rs<<" + "<<im<<"= $"<<rt<<" memory" <<endl;
         string address = ADD(reg[rs][0], to_string(im));
-        if(address.length() == 3){
+        if(address.length() == 3)
+        {
           address = "0"+address;
         }
-        else if(address.length() == 2){
+        else if(address.length() == 2)
+        {
           address = "00"+address;
         }
         reg[rt][1] = address;
+    }
+    if(opCode == 4){
+      cout<<"OpCode: "<<opCode<<" -> branch equal"<<" $"<<rs<<" == $"<<rt<<endl;
+      cout<<"Result: ";
+      if(reg[rs] == reg[rt]){
+        cout<<"True";
+      }
+      else{
+        cout<<"False";
+      }
+    }
+    if(opCode == 5){
+      cout<<"OpCode: "<<opCode<<" -> branch not equal"<<" $"<<rs<<" != $"<<rt<<endl;
+      cout<<"Result: ";
+      if(reg[rs] != reg[rt]){
+        cout<<"True";
+      }
+      else{
+        cout<<"False";
+      }
+      cout<<endl;
     }
 }
 bool isHex(string hex){
@@ -231,26 +257,24 @@ bool isHex(string hex){
 int main(){
 
     map<int, vector<string> > reg;
-    reg[1].push_back("0009");
-    reg[1].push_back("0103");
-    reg[2].push_back("012A");
-    reg[2].push_back("0104");
-    reg[3].push_back("0015");
-    reg[3].push_back("0105");
-    reg[4].push_back("0023");
-    reg[4].push_back("0106");
-    reg[5].push_back("FF12");
-    reg[5].push_back("0106");
-    reg[6].push_back("0076");
-    reg[6].push_back("0107");
-    reg[7].push_back("FFC9");
-    reg[7].push_back("0108");
-    reg[8].push_back("0015");
-    reg[8].push_back("0109");
-
-    string quit= "c";
+    for(int i = 0;i < 16;i++){
+      string in;
+      if(i < 10){
+        in = "000"+to_string(i);
+      }
+      else{
+        in = "00"+to_string(i);
+      }
+      reg[i].push_back(in);
+      reg[i].push_back(in);
+    }
+    printRegisters(reg);
+    int i;
+    cout<<"How many instructions would you like to input? ";
+    cin>>i;
+   
     string input;
-    while(quit != "q"){
+    while(i != 0){
         cout<<"Enter hexidecimal: ";
         cin>>input;
         while(!isHex(input)){
@@ -264,8 +288,7 @@ int main(){
           IFormat(input, reg);
         }
         printRegisters(reg);
-        cout<<"Press q to quit: ";
-        cin>>quit;
+        i--;
     }
     cout<<"Thank you for using our MIPS Processor";
 
@@ -279,7 +302,7 @@ int cti(char i)
 void printRegisters(map<int, vector<string> > regi) {
     cout << "Updated Register File:\n";
     for (auto& reg : regi) {
-        cout << "$" << reg.first << ": " << setw(8) << setfill('0') << reg.second[0] << " memory: " << reg.second[1] << "\n";
+        cout << "$" << reg.first << ": " << setw(4) << setfill('0') << reg.second[0] << " memory: " << reg.second[1] << "\n";
     }
 }
 int STI(string s)
@@ -346,7 +369,6 @@ string hexToBinary(string hex){
       
       if(seg.length() == 1){
         seg = "000"+seg;
-   
       }
       else if(seg.length() == 2){
         seg = "00"+seg;
