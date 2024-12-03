@@ -135,7 +135,7 @@ void RFormat(string hex,map<int, vector<string> >& reg){
     hex = subString(hex,6,hex.length());
     cout<<subString(hex,0,5)<<" (5)"<<subString(hex,5,10)<<" (5)"<<subString(hex,10,15)<<" (6)"<<subString(hex,20,26)<<endl;
     cout<<"R Format"<<endl;
-    cout<<"Op code: 0";
+    cout<<"Op code: 0"<<endl;
     int rs = binToDecimal(STI(subString(hex,0,5)));
     cout<<"Rs: $"<<rs<<endl;
     int rt = binToDecimal(STI(subString(hex,5,10)));
@@ -258,7 +258,7 @@ bool isHex(string hex){
 };
 
 int main(){
-    cout<<STI("005600")<<endl;
+
     map<int, vector<string> > reg;
     for(int i = 0;i < 16;i++){
       string in;
@@ -266,7 +266,7 @@ int main(){
         in = "000"+to_string(i);
       }
       else{
-        in = "00"+to_string(i);
+        in = "000"+decToHex(i);
       }
       reg[i].push_back(in);
       reg[i].push_back(in);
