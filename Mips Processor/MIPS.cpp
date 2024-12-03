@@ -217,6 +217,7 @@ void IFormat(string hex, map<int, vector<string> >& reg){
       else{
         cout<<"False";
       }
+      cout<<endl;
     }
     if(opCode == 5){
       cout<<"OpCode: "<<opCode<<" -> branch not equal"<<" $"<<rs<<" != $"<<rt<<endl;
@@ -278,7 +279,7 @@ int main(){
         cout<<"Enter hexidecimal: ";
         cin>>input;
         while(!isHex(input)){
-            cout<<"Enter hex: ";
+            cout<<"Enter hexidecimal: ";
             cin>>input;
         }
         if(subString(input,0,2) == "00"){
