@@ -26,10 +26,10 @@ string operator&&(string s1, string s2){
     string f = "";
     for(int i = s1.length()-1;i >= 0;i--){
         if(s1[i] == '1' && s2[i] == '1'){
-            f = f+"1";
+          f = f+"1";
         }
         else{
-            f=f+"0";
+          f=f+"0";
         }
     }
     string a = bintoHex(f);
@@ -44,10 +44,10 @@ string operator||(string s1, string s2){
     string f = "";
     for(int i = s1.length()-1;i >= 0;i--){
         if(s1[i] == '1' || s2[i] == '1'){
-            f = "1"+f;
+          f = "1"+f;
         }
-        else{
-            f="0"+f;
+        else {
+          f="0"+f;
         }
     }
     string a = bintoHex(f);
@@ -58,10 +58,10 @@ string operator^(string s1, string s2){
     string f = "";
     for(int i = s1.length()-1;i >= 0;i--){
         if(s1[i] == '1' || s2[i] == '1' && !(s1[i] == '1' && s2[i] == '1')){
-            f = f+"1";
+          f = f+"1";
         }
         else{
-            f=f+"0";
+          f=f+"0";
         }
     }
     string a = bintoHex(f);
@@ -72,7 +72,7 @@ string binToDec(string bin){
     int tracker = 1;
     for(int i = bin.length()-1;i>=0;i--){
         if(bin[i]=='1'){
-            answer+=tracker;
+          answer+=tracker;
         }
         tracker*=2;
     }
@@ -110,11 +110,12 @@ string decToHex(long n){
 
   return str;
 }
-string ADD(string h1, string h2){
+string ADD(string de1, string de2){
+    string h1 = decToHex(STI(de1));
+    string h2 = decToHex(STI(de2));
     int d1 = STI(hexToDec(h1));
     int d2 = STI(hexToDec(h2));
     long answer = d1+d2;
-    cout<<answer<<endl;
     return decToHex(answer);
 
 }
@@ -185,18 +186,19 @@ void IFormat(string hex, map<int, vector<string> >& reg){
     cout<<"Immediate: "<<im<<endl;
     
     if(opCode == 8){
-        cout<<"OpCode: "<<opCode<<" -> addi"<<" $"<<rs<<" "<<im<<" $"<<rt<<endl;
+        cout<<"OpCode: "<<opCode<<" -> addi"<<" $"<<rs<<" + "<<decToHex(im)<<" = $"<<rt<<endl;
         string set = ADD(reg[rs][0],to_string(im));
         reg[rt][0] = set;
     }
     if (opCode == 35) { // LW
-        cout<<"OpCode: "<<opCode<<" -> load word"<<" $"<<rs<<" memory + "<<im<<"= $"<<rt<<endl;
+        cout<<"OpCode: "<<opCode<<" -> load word"<<" $"<<rs<<" memory + "<<decToHex(im)<<"= $"<<rt<<endl;
+        
         string address = ADD(reg[rs][1], to_string(im));
         reg[rt][0] = address;
       
     }
     if (opCode == 43) { // SW
-        cout<<"OpCode: "<<opCode<<" -> store word"<<" $"<<rs<<" + "<<im<<"= $"<<rt<<" memory" <<endl;
+        cout<<"OpCode: "<<opCode<<" -> store word"<<" $"<<rs<<" + "<<decToHex(im)<<"= $"<<rt<<" memory" <<endl;
         string address = ADD(reg[rs][0], to_string(im));
         if(address.length() == 3)
         {
@@ -212,12 +214,12 @@ void IFormat(string hex, map<int, vector<string> >& reg){
       cout<<"OpCode: "<<opCode<<" -> branch equal"<<" $"<<rs<<" == $"<<rt<<endl;
       cout<<"Result: ";
       if(reg[rs] == reg[rt]){
-        cout<<"True";
+        cout<<"True"<<endl;
       }
       else{
-        cout<<"False";
+        cout<<"False"<<endl;
       }
-      cout<<endl;
+      
     }
     if(opCode == 5){
       cout<<"OpCode: "<<opCode<<" -> branch not equal"<<" $"<<rs<<" != $"<<rt<<endl;
@@ -246,8 +248,8 @@ bool isHex(string hex){
             {
                 if(hex[i] < 'A' || hex[i] > 'F')
                 {
-                    cout<<"Invalid Character"<<endl;
-                    return false;
+                  cout<<"Invalid Character"<<endl;
+                  return false;
                 }
             }
         }
@@ -256,7 +258,7 @@ bool isHex(string hex){
 };
 
 int main(){
-
+    cout<<STI("005600")<<endl;
     map<int, vector<string> > reg;
     for(int i = 0;i < 16;i++){
       string in;
@@ -292,8 +294,6 @@ int main(){
         i--;
     }
     cout<<"Thank you for using our MIPS Processor";
-
-    
 };
 int cti(char i)
 {
@@ -303,7 +303,7 @@ int cti(char i)
 void printRegisters(map<int, vector<string> > regi) {
     cout << "Updated Register File:\n";
     for (auto& reg : regi) {
-        cout << "$" << reg.first << ": " << setw(4) << setfill('0') << reg.second[0] << " memory: " << reg.second[1] << "\n";
+        cout << "$" << reg.first << ": " << setw(4) << setfill('0') << reg.second[0] << " memory["<<reg.first<<"]: "<<reg.second[1] << "\n";
     }
 }
 int STI(string s)
