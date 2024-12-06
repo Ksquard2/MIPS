@@ -8,6 +8,7 @@
 #include <stdexcept>
 using namespace std;
 
+bool isNum(string);
 int cti(char);
 void printRegisters(map<int, vector<string> >);
 int STI(string);
@@ -110,9 +111,8 @@ string decToHex(long n){
 
   return str;
 }
-string ADD(string de1, string de2){
-    string h1 = decToHex(STI(de1));
-    string h2 = decToHex(STI(de2));
+
+string ADD(string h1, string h2){
     int d1 = STI(hexToDec(h1));
     int d2 = STI(hexToDec(h2));
     long answer = d1+d2;
@@ -182,24 +182,24 @@ void IFormat(string hex, map<int, vector<string> >& reg){
     cout<<"Rs: $"<<rs<<endl;
     int rt = binToDecimal(STI(subString(hex,11,16)));
     cout<<"Rt: $"<<rt<<endl;
-    int im = binToDecimal(STI(subString(hex,16,32)));
+    string im = (bintoHex(subString(hex,16,32)));
     cout<<"Immediate: "<<im<<endl;
     
     if(opCode == 8){
-        cout<<"OpCode: "<<opCode<<" -> addi"<<" $"<<rs<<" + "<<decToHex(im)<<" = $"<<rt<<endl;
-        string set = ADD(reg[rs][0],to_string(im));
+        cout<<"OpCode: "<<opCode<<" -> addi"<<" $"<<rs<<" + "<<im<<" = $"<<rt<<endl;
+        string set = ADD(reg[rs][0],im);
         reg[rt][0] = set;
     }
     if (opCode == 35) { // LW
-        cout<<"OpCode: "<<opCode<<" -> load word"<<" $"<<rs<<" memory + "<<decToHex(im)<<"= $"<<rt<<endl;
+        cout<<"OpCode: "<<opCode<<" -> load word memory["<<rs<<"] + "<<im<<"= $"<<rt<<endl;
         
-        string address = ADD(reg[rs][1], to_string(im));
+        string address = ADD(reg[rs][1], im);
         reg[rt][0] = address;
       
     }
     if (opCode == 43) { // SW
-        cout<<"OpCode: "<<opCode<<" -> store word"<<" $"<<rs<<" + "<<decToHex(im)<<"= $"<<rt<<" memory" <<endl;
-        string address = ADD(reg[rs][0], to_string(im));
+        cout<<"OpCode: "<<opCode<<" -> store word"<<" $"<<rs<<" + "<<im<<" = memory["<<rt<<"]"<<endl;
+        string address = ADD(reg[rs][0], im);
         if(address.length() == 3)
         {
           address = "0"+address;
@@ -263,10 +263,10 @@ int main(){
     for(int i = 0;i < 16;i++){
       string in;
       if(i < 10){
-        in = "000"+to_string(i);
+        in = to_string(i);
       }
       else{
-        in = "000"+decToHex(i);
+        in = decToHex(i);
       }
       reg[i].push_back(in);
       reg[i].push_back(in);
@@ -303,7 +303,7 @@ int cti(char i)
 void printRegisters(map<int, vector<string> > regi) {
     cout << "Updated Register File:\n";
     for (auto& reg : regi) {
-        cout << "$" << reg.first << ": " << setw(4) << setfill('0') << reg.second[0] << " memory["<<reg.first<<"]: "<<reg.second[1] << "\n";
+        cout << "$" << reg.first << ": " << setw(4) << setfill('0') << reg.second[0] << " memory["<<reg.first<<"]: "<<setw(4) << setfill('0')<<reg.second[1] << "\n";
     }
 }
 int STI(string s)
@@ -419,22 +419,15 @@ end = start;
 }
 return hex;
 }
-// void addZeros(string s1, string s2){
-// int diff = s1.length()-s2.length();
-//     if(diff < 0){
-//         diff*=-1;
-//     }
-//     string z = "";
-//     for(int i = 0;i < diff;i++){
-//         z+="0";
-//     }
-//     if(s1.length()>s2.length()){
-//         s2 = z+s2;
-//     }
-//     else{
-//         s1 = z+s1;
-//     }
-// }
+
+bool isNum(string str){
+  for(int i = 0;i < str.length();i++){
+    if(str[i] < '0' || str[i] > '9'){
+      return false;
+    }
+  }
+  return true;
+}
 void addZeros(string &s1, string &s2) {
     int diff = s1.length() - s2.length();
     if (diff < 0) diff = -diff;
