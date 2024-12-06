@@ -57,6 +57,8 @@ string operator||(string s1, string s2){
     return a;
 }
 string operator^(string s1, string s2){
+    s1 = hexToBinary(s1);
+    s2 = hexToBinary(s2);
     addZeros(s1,s2);
     string f = "";
     for(int i = s1.length()-1;i >= 0;i--){
