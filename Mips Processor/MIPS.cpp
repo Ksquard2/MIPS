@@ -37,9 +37,6 @@ string operator&&(string se1, string se2){
         }
     }
     string a = bintoHex(f);
-    cout<<s1<<endl;
-    cout<<s2<<endl;
-    cout<<f<<endl;
     return a;
 }
 
