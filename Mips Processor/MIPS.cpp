@@ -22,20 +22,24 @@ char numToLetter(int);
 string bintoHex(string bin);
 void addZeros(string &s1, string &s2);
 
-string operator&&(string s1, string s2){
-    s1 = hexToBinary(s1);
-    s2 = hexToBinary(s2);
+string operator&&(string se1, string se2){
+    string s1 = hexToBinary(se1);
+    string s2 = hexToBinary(se2);
     addZeros(s1,s2);
     string f = "";
     for(int i = s1.length()-1;i >= 0;i--){
         if(s1[i] == '1' && s2[i] == '1'){
-          f = f+"1";
+          cout<<i<<endl;
+          f = "1"+f;
         }
         else{
-          f=f+"0";
+          f="0"+f;
         }
     }
     string a = bintoHex(f);
+    cout<<s1<<endl;
+    cout<<s2<<endl;
+    cout<<f<<endl;
     return a;
 }
 
@@ -63,10 +67,10 @@ string operator^(string s1, string s2){
     string f = "";
     for(int i = s1.length()-1;i >= 0;i--){
         if(s1[i] == '1' || s2[i] == '1' && !(s1[i] == '1' && s2[i] == '1')){
-          f = f+"1";
+          f = "1"+f;
         }
         else{
-          f=f+"0";
+          f = "0"+f;
         }
     }
     string a = bintoHex(f);
