@@ -29,7 +29,6 @@ string operator&&(string se1, string se2){
     string f = "";
     for(int i = s1.length()-1;i >= 0;i--){
         if(s1[i] == '1' && s2[i] == '1'){
-          cout<<i<<endl;
           f = "1"+f;
         }
         else{
