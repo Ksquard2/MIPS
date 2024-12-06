@@ -83,6 +83,11 @@ string binToDec(string bin){
     }
     return to_string(answer);
 }
+int hexToDec2(string hex){
+    hex = hexToBinary(hex);
+    hex = binToDec(hex);
+    return STI(hex);
+}
 
 string hexToDec(string hex){
     hex = hexToBinary(hex);
@@ -202,7 +207,7 @@ void IFormat(string hex, map<int, vector<string> >& reg){
       
     }
     if (opCode == 43) { // SW
-        cout<<"OpCode: "<<opCode<<" -> store word"<<" $"<<rs<<" + "<<im<<" = memory["<<rt<<"]"<<endl;
+        cout<<"OpCode: "<<opCode<<" -> store word"<<" memory[$"<<rs<<" + "<<im<<"] = $"<<rt<<endl;
         string address = ADD(reg[rs][0], im);
         if(address.length() == 3)
         {
@@ -212,7 +217,8 @@ void IFormat(string hex, map<int, vector<string> >& reg){
         {
           address = "00"+address;
         }
-        reg[rt][1] = address;
+       int a = hexToDec2(address);
+        reg[a][1] = reg[rt][0];
     }
     if(opCode == 4){
       cout<<"OpCode: "<<opCode<<" -> branch equal"<<" $"<<rs<<" == $"<<rt<<endl;
